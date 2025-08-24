@@ -9748,8 +9748,6 @@ dofile('Venom.lua')
 end
 
 
-‏‏اريد تضيفلي زر تعديل السعر بهذا الكود 
-
 if text == '/start' then
     Redis:sadd(Venom..'Venom:Num:User:Pv',msg.sender.user_id)  
     if not msg.ControllerBot and not Redis:sismember(Venom.."Venom:DevelopersQ:Groups", msg.sender.user_id) then
