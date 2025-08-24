@@ -9747,7 +9747,6 @@ LuaTele.sendText(msg_chat_id,msg_id, "⌔︙ تم تحديث الملفات ♻"
 dofile('Venom.lua')  
 end
 
--- دالة لإظهار القائمة الرئيسية-- دالة-- /start
 if text == '/start' then
     Redis:sadd(Venom..'Venom:Num:User:Pv', msg.sender.user_id)
     if not msg.ControllerBot and not Redis:sismember(Venom.."Venom:DevelopersQ:Groups", msg.sender.user_id) then
@@ -9788,7 +9787,7 @@ local function sub_menu(item_name, add_text, del_text)
             { {text='🔙 رجوع',type='text'} },
         }
     }
-    return LuaTele.sendText(msg_chat_id,msg_id,'⌔︙اختر العملية المطلوبة ل'..item_name,'md',false,false,false,false,reply_markup)
+    return LuaTele.sendText(msg_chat_id,msg_id,'⌔︙اختر العملية المطلوبة لـ'..item_name,'md',false,false,false,false,reply_markup)
 end
 
 -- فتح القوائم الفرعية
@@ -9815,7 +9814,7 @@ if text == '🔙 رجوع' then
     return LuaTele.sendText(msg_chat_id,msg_id,'⌔︙رجعتك للقائمة الرئيسية','md',false,false,false,false,reply_markup)
 end
 
--- انتظار السعر عند الإضافة
+-- اضافة طلب
 if text == '➕ اضافة طلب بيتزا' then
     Redis:set(Venom.."wait_price:"..msg.sender.user_id,"pizza")
     return LuaTele.sendText(msg_chat_id,msg_id,"⌔︙ارسل سعر وجبة *بيتزا*","md")
@@ -9829,7 +9828,7 @@ if text == '➕ اضافة طلب بيتزا + جكسي' then
     return LuaTele.sendText(msg_chat_id,msg_id,"⌔︙ارسل سعر وجبة *بيتزا + جكسي*","md")
 end
 
--- استلام السعر وتخزينه (قائمة لكل نوع * لكل مستخدم)
+-- استقبال السعر وحفظه
 if Redis:get(Venom.."wait_price:"..msg.sender.user_id) then
     local order_type = Redis:get(Venom.."wait_price:"..msg.sender.user_id)
     local price = tonumber(text)
@@ -9842,7 +9841,7 @@ if Redis:get(Venom.."wait_price:"..msg.sender.user_id) then
     return LuaTele.sendText(msg_chat_id,msg_id,"⌔︙تم اضافة طلب بسعر *"..price.."* دينار ✅","md")
 end
 
--- انتظار السعر عند الحذف
+-- حذف طلب
 if text == '➖ حذف طلب بيتزا' then
     Redis:set(Venom.."wait_del:"..msg.sender.user_id,"pizza")
     return LuaTele.sendText(msg_chat_id,msg_id,"⌔︙ارسل سعر وجبة بيتزا للحذف","md")
@@ -9856,7 +9855,7 @@ if text == '➖ حذف طلب بيتزا + جكسي' then
     return LuaTele.sendText(msg_chat_id,msg_id,"⌔︙ارسل سعر وجبة بيتزا + جكسي للحذف","md")
 end
 
--- استلام السعر للحذف (يحذف عنصر واحد فقط من القائمة)
+-- استلام السعر وحذفه
 if Redis:get(Venom.."wait_del:"..msg.sender.user_id) then
     local order_type = Redis:get(Venom.."wait_del:"..msg.sender.user_id)
     local price = tonumber(text)
@@ -9873,7 +9872,7 @@ if Redis:get(Venom.."wait_del:"..msg.sender.user_id) then
     end
 end
 
--- زر المجموع
+-- عرض المجموع
 if text == '📊 المجموع' then
     local function get_stats(order_type, icon, name)
         local list_key = Venom.."orders:list:"..order_type..msg.sender.user_id
@@ -9901,7 +9900,6 @@ if text == '♻️ تصفير الطلبات' then
     end
     return LuaTele.sendText(msg_chat_id,msg_id,"⌔︙تم تصفير جميع الطلبات الخاصة بك ✅","md")
 end
-    ‏
 if text == 'قسم الاذاعه ⌔' then
 if not msg.ControllerBot then 
 return LuaTele.sendText(msg_chat_id,msg_id,'\n*⌔︙هاذا الامر يخص { '..Controller_Num(1)..' }* ',"md",true)  
