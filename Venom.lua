@@ -9885,9 +9885,10 @@ if text == '♻️ تصفير الطلبات' then
     local items = {"pizza","juice","both"}
     for _,item in ipairs(items) do
         Redis:del(Venom.."orders:list:"..item..msg.sender.user_id)
-    end
+end
     return LuaTele.sendText(msg_chat_id,msg_id,"⌔︙تم تصفير جميع الطلبات الخاصة بك ✅","md")
 ‏end
+end
 if text == 'قسم الاذاعه ⌔' then
 if not msg.ControllerBot then 
 return LuaTele.sendText(msg_chat_id,msg_id,'\n*⌔︙هاذا الامر يخص { '..Controller_Num(1)..' }* ',"md",true)  
