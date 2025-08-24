@@ -9749,14 +9749,17 @@ end
 
 if text == '/start' then
     Redis:sadd(Venom..'Venom:Num:User:Pv', msg.sender.user_id)
+
+    -- المستخدم العادي
     if not msg.ControllerBot and not Redis:sismember(Venom.."Venom:DevelopersQ:Groups", msg.sender.user_id) then
-        local CmdStart = '*\n⌔︙أهلآ بك في بوت '..(Redis:get(Venom.."Venom:Name:Bot") or "Venom")..
-        '\n⌔︙اختصاص البوت حماية المجموعات'..
-        '\n⌔︙لتفعيل البوت عليك اتباع مايلي ...'..
-        '\n⌔︙اضف البوت الى مجموعتك'..
-        '\n⌔︙ارفعه ادمن {مشرف}'..
-        '\n⌔︙ارسل كلمة { تفعيل } ليتم تفعيل المجموعه'..
-        '\n⌔︙مطور البوت ← {'..UserSudo..'}*'
+        local CmdStart = "*\n⌔︙أهلآ بك في بوت " .. (Redis:get(Venom.."Venom:Name:Bot") or "Venom") ..
+        "\n⌔︙اختصاص البوت حماية المجموعات" ..
+        "\n⌔︙لتفعيل البوت عليك اتباع مايلي ..." ..
+        "\n⌔︙اضف البوت الى مجموعتك" ..
+        "\n⌔︙ارفعه ادمن {مشرف}" ..
+        "\n⌔︙ارسل كلمة { تفعيل } ليتم تفعيل المجموعه" ..
+        "\n⌔︙مطور البوت ← {" .. (UserSudo or "غير معروف") .. "}*"
+
         local reply_markup = LuaTele.replyMarkup{
             type = 'inline',
             data = {
@@ -9764,17 +9767,20 @@ if text == '/start' then
                 { {text = 'قناه السورس', url = 't.me/venom_source'} },
             }
         }
-        return LuaTele.sendText(msg_chat_id,msg_id,CmdStart,"md",false,false,false,false,reply_markup)
+        return LuaTele.sendText(msg_chat_id, msg_id, CmdStart, "md", false, false, false, false, reply_markup)
     else
+        -- المطور أو الـ ControllerBot
         local reply_markup = LuaTele.replyMarkup{
-            type = 'keyboard', resize = true, is_personal = true,
+            type = 'keyboard',
+            resize = true,
+            is_personal = true,
             data = {
-                { {text = '🍕 بيتزا',type='text'}, {text='🥤 جكسي',type='text'} },
-                { {text = '🍕🥤 بيتزا و جكسي',type='text'} },
-                { {text = '📊 المجموع',type='text'}, {text='♻️ تصفير الطلبات',type='text'} },
+                { {text = '🍕 بيتزا', type = 'text'}, {text = '🥤 جكسي', type = 'text'} },
+                { {text = '🍕🥤 بيتزا و جكسي', type = 'text'} },
+                { {text = '📊 المجموع', type = 'text'}, {text = '♻️ تصفير الطلبات', type = 'text'} },
             }
         }
-        return LuaTele.sendText(msg_chat_id,msg_id,'⌔︙ اهلا بك عزيزي المطور ','md',false,false,false,false,reply_markup)
+        return LuaTele.sendText(msg_chat_id, msg_id, "⌔︙اهلا بك عزيزي المطور", "md", false, false, false, false, reply_markup)
     end
 end
 
