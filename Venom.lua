@@ -9746,114 +9746,148 @@ print('User Id : '..msg_user_send_id)
 LuaTele.sendText(msg_chat_id,msg_id, "⌔︙ تم تحديث الملفات ♻","md",true)
 dofile('Venom.lua')  
 end
--- طلبات (بيتزا + جكسي)
-if text == "/start" or text == "ابدأ" then
-  local reply_markup = LuaTele.replyMarkup{
-    type = 'keyboard',
-    resize = true,
-    keyboard = {
-      { {text="🍕 بيتزا"}, {text="🌭 جكسي"} },
-      { {text="🍕+🌭 بيتزا + جكسي"} },
-      { {text="📊 المجموع"} }
+
+
+‏‏if text == '/start' then
+‏    Redis:sadd(Venom..'Venom:Num:User:Pv',msg.sender.user_id)  
+‏    if not msg.ControllerBot and not Redis:sismember(Venom.."Venom:DevelopersQ:Groups", msg.sender.user_id) then
+‏        if not Redis:get(Venom.."Venom:Start:Bot") then
+‏            local CmdStart = '*\n⌔︙أهلآ بك في بوت '..(Redis:get(Venom.."Venom:Name:Bot") or "Venom")..
+‏            '\n⌔︙اختصاص البوت حماية المجموعات'..
+‏            '\n⌔︙لتفعيل البوت عليك اتباع مايلي ...'..
+‏            '\n⌔︙اضف البوت الى مجموعتك'..
+‏            '\n⌔︙ارفعه ادمن {مشرف}'..
+‏            '\n⌔︙ارسل كلمة { تفعيل } ليتم تفعيل المجموعه'..
+‏            '\n⌔︙مطور البوت ← {'..UserSudo..'}*'
+‏            local reply_markup = LuaTele.replyMarkup{
+‏                type = 'inline',
+‏                data = {
+‏                    { {text = '➕ اضفني لمجموعتك', url = 't.me/'..UserBot..'?startgroup=new'} },
+‏                    { {text = 'قناه السورس', url = 't.me/venom_source'} },
+                }
+            }
+‏            return LuaTele.sendText(msg_chat_id,msg_id,CmdStart,"md",false, false, false, false, reply_markup)
+‏        else
+‏            local reply_markup = LuaTele.replyMarkup{
+‏                type = 'inline',
+‏                data = {
+‏                    { {text = '➕ اضفني لمجموعتك', url = 't.me/'..UserBot..'?startgroup=new'} },
+‏                    { {text = 'قناه السورس', url = 't.me/venom_source'} },
+                }
+            }
+‏            return LuaTele.sendText(msg_chat_id,msg_id,Redis:get(Venom.."Venom:Start:Bot"),"md",false, false, false, false, reply_markup)
+‏        end
+‏    else
+        -- القوائم الرئيسية مع زر تصفير (تظهر للمطور الأساسي + المطور الثانوي)
+‏        local reply_markup = LuaTele.replyMarkup{type = 'keyboard',resize = true,is_personal = true,
+‏            data = {
+‏                { {text = '🍕 بيتزا',type = 'text'}, {text = '🥤 جكسي',type = 'text'} },
+‏                { {text = '🍕🥤 بيتزا و جكسي',type = 'text'} },
+‏                { {text = '📊 المجموع',type = 'text'}, {text = '♻️ تصفير الطلبات',type = 'text'} },
+            }
+        }
+‏        return LuaTele.sendText(msg_chat_id,msg_id,'⌔︙ اهلا بك عزيزي المطور ', 'md', false, false, false, false, reply_markup)
+‏    end
+‏end
+
+-- قوائم فرعية
+‏local function sub_menu(item_name, add_text, del_text)
+‏    local reply_markup = LuaTele.replyMarkup{type = 'keyboard',resize = true,is_personal = true,
+‏        data = {
+‏            { {text=add_text,type = 'text'}, {text=del_text,type = 'text'} },
+‏            { {text='🔙 رجوع',type = 'text'} },
+        }
     }
-  }
-  return LuaTele.sendText(chat_id, msg_id, "اهلاً، اختار نوع الطلب 👇", "md", true, false, false, false, reply_markup)
-end
+‏    return LuaTele.sendText(msg_chat_id,msg_id,'⌔︙اختر العملية المطلوبة ل'..item_name, 'md', false, false, false, false, reply_markup)
+‏end
 
--- الاصناف
-if text == "🍕 بيتزا" or text == "🌭 جكسي" or text == "🍕+🌭 بيتزا + جكسي" then
-  Redis:set("mode:"..chat_id, text)
-  local reply_markup = LuaTele.replyMarkup{
-    type = 'keyboard',
-    resize = true,
-    keyboard = {
-      { {text="➕ إضافة طلب"}, {text="➖ حذف طلب"} },
-      { {text="🔙 رجوع"} }
+‏if text == '🍕 بيتزا' then return sub_menu("بيتزا","➕ اضافة طلب بيتزا","➖ حذف طلب بيتزا") end
+‏if text == '🥤 جكسي' then return sub_menu("جكسي","➕ اضافة طلب جكسي","➖ حذف طلب جكسي") end
+‏if text == '🍕🥤 بيتزا و جكسي' then return sub_menu("بيتزا + جكسي","➕ اضافة طلب بيتزا + جكسي","➖ حذف طلب بيتزا + جكسي") end
+
+-- زر الرجوع
+‏if text == '🔙 رجوع' then
+‏    local reply_markup = LuaTele.replyMarkup{type = 'keyboard',resize = true,is_personal = true,
+‏        data = {
+‏            { {text = '🍕 بيتزا',type = 'text'}, {text = '🥤 جكسي',type = 'text'} },
+‏            { {text = '🍕🥤 بيتزا و جكسي',type = 'text'} },
+‏            { {text = '📊 المجموع',type = 'text'}, {text = '♻️ تصفير الطلبات',type = 'text'} },
+        }
     }
-  }
-  return LuaTele.sendText(chat_id, msg_id, "شنو تريد تسوي؟", "md", true, false, false, false, reply_markup)
-end
+‏    return LuaTele.sendText(msg_chat_id,msg_id,'⌔︙رجعتك للقائمة الرئيسية', 'md', false, false, false, false, reply_markup)
+‏end
 
--- إضافة
-if text == "➕ إضافة طلب" then
-  local item = Redis:get("mode:"..chat_id)
-  Redis:set("action:"..chat_id, "add|"..item)
-  return LuaTele.sendText(chat_id, msg_id, "ارسل السعر 🔢")
-end
+-- انتظار السعر عند إضافة طلب
+‏if text == '➕ اضافة طلب بيتزا' then Redis:set(Venom.."wait_price:"..msg.sender.user_id,"pizza") return LuaTele.sendText(msg_chat_id,msg_id,"⌔︙ارسل سعر وجبة *بيتزا*","md") end
+‏if text == '➕ اضافة طلب جكسي' then Redis:set(Venom.."wait_price:"..msg.sender.user_id,"juice") return LuaTele.sendText(msg_chat_id,msg_id,"⌔︙ارسل سعر وجبة *جكسي*","md") end
+‏if text == '➕ اضافة طلب بيتزا + جكسي' then Redis:set(Venom.."wait_price:"..msg.sender.user_id,"both") return LuaTele.sendText(msg_chat_id,msg_id,"⌔︙ارسل سعر وجبة *بيتزا + جكسي*","md") end
 
--- حذف
-if text == "➖ حذف طلب" then
-  local item = Redis:get("mode:"..chat_id)
-  Redis:set("action:"..chat_id, "del|"..item)
-  return LuaTele.sendText(chat_id, msg_id, "ارسل السعر الموجود ❌")
-end
+-- استقبال السعر وتخزينه لكل مستخدم
+‏if Redis:get(Venom.."wait_price:"..msg.sender.user_id) then
+‏    local order_type = Redis:get(Venom.."wait_price:"..msg.sender.user_id)
+‏    local price = tonumber(text)
+‏    if not price then return LuaTele.sendText(msg_chat_id,msg_id,"⌔︙رجاءً ارسل السعر كـ رقم فقط ✅","md") end
+‏    local list_key = Venom.."orders:list:"..order_type..msg.sender.user_id
+‏    Redis:rpush(list_key, price)
+‏    Redis:del(Venom.."wait_price:"..msg.sender.user_id)
+‏    return LuaTele.sendText(msg_chat_id,msg_id,"⌔︙تم اضافة طلب بسعر *"..price.."* دينار ✅","md")
+‏end
 
--- استقبال سعر
-if tonumber(text) then
-  local action = Redis:get("action:"..chat_id)
-  if action then
-    local parts = {}
-    for p in string.gmatch(action, "([^|]+)") do table.insert(parts, p) end
-    local act, item = parts[1], parts[2]
+-- انتظار السعر عند الحذف
+‏if text == '➖ حذف طلب بيتزا' then Redis:set(Venom.."wait_del:"..msg.sender.user_id,"pizza") return LuaTele.sendText(msg_chat_id,msg_id,"⌔︙ارسل سعر وجبة بيتزا للحذف","md") end
+‏if text == '➖ حذف طلب جكسي' then Redis:set(Venom.."wait_del:"..msg.sender.user_id,"juice") return LuaTele.sendText(msg_chat_id,msg_id,"⌔︙ارسل سعر وجبة جكسي للحذف","md") end
+‏if text == '➖ حذف طلب بيتزا + جكسي' then Redis:set(Venom.."wait_del:"..msg.sender.user_id,"both") return LuaTele.sendText(msg_chat_id,msg_id,"⌔︙ارسل سعر وجبة بيتزا + جكسي للحذف","md") end
 
-    local key = "orders:"..item
-    if act == "add" then
-      Redis:rpush(key, text)
-      LuaTele.sendText(chat_id, msg_id, "✅ تمت إضافة السعر "..text.." إلى "..item)
-    elseif act == "del" then
-      local list = Redis:smembers(key) or {}
-      local found = false
-      for i, v in ipairs(list) do
-        if v == text then
-          Redis:lrem(key, 1, text)
-          found = true
-          break
-        end
-      end
-      if found then
-        LuaTele.sendText(chat_id, msg_id, "🗑️ تم حذف السعر "..text.." من "..item)
-      else
-        LuaTele.sendText(chat_id, msg_id, "⚠️ السعر غير موجود ضمن "..item)
-      end
-    end
-    Redis:del("action:"..chat_id)
-  end
-end
+-- استقبال السعر للحذف لكل مستخدم
+‏if Redis:get(Venom.."wait_del:"..msg.sender.user_id) then
+‏    local order_type = Redis:get(Venom.."wait_del:"..msg.sender.user_id)
+‏    local price = tonumber(text)
+‏    if not price then return LuaTele.sendText(msg_chat_id,msg_id,"⌔︙رجاءً ارسل السعر كـ رقم فقط ✅","md") end
+‏    local list_key = Venom.."orders:list:"..order_type..msg.sender.user_id
+‏    local list = Redis:lrange(list_key, 0, -1)
+‏    local found = false
+‏    for i,v in ipairs(list) do
+‏        if tonumber(v) == price then
+‏            Redis:lrem(list_key, 1, v)
+‏            found = true
+‏            break
+‏        end
+‏    end
+‏    Redis:del(Venom.."wait_del:"..msg.sender.user_id)
+‏    if found then
+‏        return LuaTele.sendText(msg_chat_id,msg_id,"⌔︙تم حذف الطلب بسعر *"..price.."* دينار ✅","md")
+‏    else
+‏        return LuaTele.sendText(msg_chat_id,msg_id,"⌔︙لم يتم العثور على طلب بهذا السعر ❌","md")
+‏    end
+‏end
 
--- المجموع
-if text == "📊 المجموع" then
-  local items = {"🍕 بيتزا","🌭 جكسي","🍕+🌭 بيتزا + جكسي"}
-  local totalCount, totalPrice = 0, 0
-  local msg = "📊 قائمة المجموع:\n\n"
-  for _, item in ipairs(items) do
-    local key = "orders:"..item
-    local list = Redis:smembers(key) or {}
-    local count, sum = 0, 0
-    for _, v in ipairs(list) do
-      count = count + 1
-      sum = sum + tonumber(v)
-    end
-    msg = msg.."▫️ "..item.." = "..count.." طلب (المجموع "..sum..")\n"
-    totalCount = totalCount + count
-    totalPrice = totalPrice + sum
-  end
-  msg = msg.."\n✨ العدد الكلي: "..totalCount.." طلب\n💰 المجموع الكلي: "..totalPrice
-  return LuaTele.sendText(chat_id, msg_id, msg)
-end
+-- زر المجموع لكل مستخدم
+‏if text == '📊 المجموع' then
+‏    local function get_stats(order_type, icon, name)
+‏        local list_key = Venom.."orders:list:"..order_type..msg.sender.user_id
+‏        local list = Redis:lrange(list_key, 0, -1)
+‏        local count = #list
+‏        local sum = 0
+‏        for i,v in ipairs(list) do sum = sum + tonumber(v) end
+‏        return count, sum, icon.." "..name..": "..count.." وجبة - المجموع: "..sum.." دينار\n"
+‏    end
+‏    local c1,s1,t1 = get_stats("pizza","🍕","بيتزا")
+‏    local c2,s2,t2 = get_stats("juice","🥤","جكسي")
+‏    local c3,s3,t3 = get_stats("both","🍕🥤","بيتزا + جكسي")
+‏    local total_count = c1+c2+c3
+‏    local total_sum = s1+s2+s3
+‏    local result = "⌔︙احصائيات الطلبات:\n\n"..t1..t2..t3.."\n📊 العدد الكلي: *"..total_count.."* وجبة\n💰 المجموع الكلي: *"..total_sum.."* دينار"
+‏    return LuaTele.sendText(msg_chat_id,msg_id,result,"md")
+‏end
 
--- رجوع
-if text == "🔙 رجوع" then
-  local reply_markup = LuaTele.replyMarkup{
-    type = 'keyboard',
-    resize = true,
-    keyboard = {
-      { {text="🍕 بيتزا"}, {text="🌭 جكسي"} },
-      { {text="🍕+🌭 بيتزا + جكسي"} },
-      { {text="📊 المجموع"} }
-    }
-  }
-  return LuaTele.sendText(chat_id, msg_id, "رجعنا للقائمة الرئيسية 👇", "md", true, false, false, false, reply_markup)
-end
+-- زر تصفير الطلبات لكل مستخدم
+‏if text == '♻️ تصفير الطلبات' then
+‏    local items = {"pizza","juice","both"}
+‏    for _,item in ipairs(items) do
+‏        Redis:del(Venom.."orders:list:"..item..msg.sender.user_id)
+‏    end
+‏    return LuaTele.sendText(msg_chat_id,msg_id,"⌔︙تم تصفير جميع الطلبات الخاصة بك ✅","md")
+‏end
 if text == 'قسم الاذاعه ⌔' then
 if not msg.ControllerBot then 
 return LuaTele.sendText(msg_chat_id,msg_id,'\n*⌔︙هاذا الامر يخص { '..Controller_Num(1)..' }* ',"md",true)  
