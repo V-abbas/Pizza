@@ -9746,6 +9746,102 @@ print('User Id : '..msg_user_send_id)
 LuaTele.sendText(msg_chat_id,msg_id, "⌔︙ تم تحديث الملفات ♻","md",true)
 dofile('Venom.lua')  
 end
+if text == '/start' then
+Redis:sadd(Venom..'Venom:Num:User:Pv',msg.sender.user_id)  
+if not msg.ControllerBot then
+if not Redis:get(Venom.."Venom:Start:Bot") then
+local CmdStart = '*\n⌔︙أهلآ بك في بوت '..(Redis:get(Venom.."Venom:Name:Bot") or "Venom")..
+'\n⌔︙اختصاص البوت حماية المجموعات'..
+'\n⌔︙لتفعيل البوت عليك اتباع مايلي ...'..
+'\n⌔︙اضف البوت الى مجموعتك'..
+'\n⌔︙ارفعه ادمن {مشرف}'..
+'\n⌔︙ارسل كلمة { تفعيل } ليتم تفعيل المجموعه'..
+'\n⌔︙مطور البوت ← {'..UserSudo..'}*'
+local reply_markup = LuaTele.replyMarkup{
+type = 'inline',
+data = {
+{
+{text = '➕ اضفني لمجموعتك', url = 't.me/'..UserBot..'?startgroup=new'}, 
+},
+{
+{text = 'قناه السورس', url = 't.me/venom_source'}, 
+},
+}
+}
+return LuaTele.sendText(msg_chat_id,msg_id,CmdStart,"md",false, false, false, false, reply_markup)
+else
+local reply_markup = LuaTele.replyMarkup{
+type = 'inline',
+data = {
+{
+{text = '➕ اضفني لمجموعتك', url = 't.me/'..UserBot..'?startgroup=new'}, 
+},
+{
+{text = 'قناه السورس', url = 't.me/venom_source'}, 
+},
+}
+}
+return LuaTele.sendText(msg_chat_id,msg_id,Redis:get(Venom.."Venom:Start:Bot"),"md",false, false, false, false, reply_markup)
+end
+else
+local reply_markup = LuaTele.replyMarkup{type = 'keyboard',resize = true,is_personal = true,
+data = {
+{
+{text = 'تفعيل التواصل ⌔',type = 'text'},{text = 'تعطيل التواصل ⌔', type = 'text'},
+},
+{
+{text = 'تفعيل البوت الخدمي ⌔',type = 'text'},{text = 'تعطيل البوت الخدمي ⌔', type = 'text'},
+},
+{
+{text = 'قسم الاذاعه ⌔',type = 'text'},
+},
+{
+{text = 'المطورين الثانويين ⌔',type = 'text'},{text = 'المطورين ⌔',type = 'text'},{text = 'قائمه العام ⌔', type = 'text'},
+},
+{
+{text = 'مسح المطورين الثانويين ⌔',type = 'text'},{text = 'مسح المطورين ⌔',type = 'text'},{text = 'مسح قائمه العام ⌔', type = 'text'},
+},
+{
+{text = 'تغيير اسم البوت ⌔',type = 'text'},{text = 'حذف اسم البوت ⌔', type = 'text'},
+},
+{
+{text = 'الاحصائيات ⌔',type = 'text'},
+},
+{
+{text = 'تغغير كليشه المطور ⌔',type = 'text'},{text = 'حذف كليشه المطور ⌔', type = 'text'},
+},
+{
+{text = 'تغيير كليشه ستارت ⌔',type = 'text'},{text = 'حذف كليشه ستارت ⌔', type = 'text'},
+},
+{
+{text = 'الاشتراك الاجباري ⌔',type = 'text'},{text = 'تغيير الاشتراك الاجباري ⌔',type = 'text'},
+},
+{
+{text = 'تفعيل الاشتراك الاجباري ⌔',type = 'text'},{text = 'تعطيل الاشتراك الاجباري ⌔',type = 'text'},
+},
+{
+{text = 'تنظيف المجموعات ⌔',type = 'text'},{text = 'تنظيف المشتركين ⌔', type = 'text'},
+},
+{
+{text = 'جلب النسخه الاحتياطيه ⌔',type = 'text'},
+},
+{
+{text = 'اضف رد عام ⌔',type = 'text'},{text = 'حذف رد عام ⌔', type = 'text'},
+},
+{
+{text = 'الردود العامه ⌔',type = 'text'},{text = 'مسح الردود العامه ⌔', type = 'text'},
+},
+{
+{text = 'تحديث الملفات ⌔',type = 'text'},{text = 'تحديث السورس ⌔', type = 'text'},
+},
+{
+{text = 'الغاء الامر ⌔',type = 'text'},
+},
+}
+}
+return LuaTele.sendText(msg_chat_id,msg_id,'⌔︙ اهلا بك عزيزي المطور ', 'md', false, false, false, false, reply_markup)
+end
+end
 if text == 'قسم الاذاعه ⌔' then
 if not msg.ControllerBot then 
 return LuaTele.sendText(msg_chat_id,msg_id,'\n*⌔︙هاذا الامر يخص { '..Controller_Num(1)..' }* ',"md",true)  
