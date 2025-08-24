@@ -9880,7 +9880,6 @@ if text == '♻️ تصفير الطلبات' then
     end
     return LuaTele.sendText(msg_chat_id, msg_id, "⌔︙تم تصفير جميع الطلبات الخاصة بك ✅", "md")
 end
-end
 if text == 'قسم الاذاعه ⌔' then
 if not msg.ControllerBot then 
 return LuaTele.sendText(msg_chat_id,msg_id,'\n*⌔︙هاذا الامر يخص { '..Controller_Num(1)..' }* ',"md",true)  
