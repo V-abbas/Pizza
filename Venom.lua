@@ -9746,8 +9746,6 @@ print('User Id : '..msg_user_send_id)
 LuaTele.sendText(msg_chat_id,msg_id, "⌔︙ تم تحديث الملفات ♻","md",true)
 dofile('Venom.lua')  
 end
-
-
 if text == 'قسم الاذاعه ⌔' then
 if not msg.ControllerBot then 
 return LuaTele.sendText(msg_chat_id,msg_id,'\n*⌔︙هاذا الامر يخص { '..Controller_Num(1)..' }* ',"md",true)  
